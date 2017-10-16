@@ -52,6 +52,7 @@ def input_list_words(user_input):
    #print(input_words)
     #return (input_words)
     userResult(input_words)
+    return input_words
 
 class MyTest(unittest.TestCase):
     def test(self):
@@ -66,6 +67,19 @@ class MyTest(unittest.TestCase):
         self.assertEqual(userResult(['hello', 'can']), "your incorrectly spelled words are: [] your percentage of incorrectly spelled words is 0.0")
     def test5(self):
         self.assertEqual(input_list_words("I like corn"), ['i', 'like', 'corn'])
+    #Testing input_list_words
+    def test_InputListWords_negative(self):
+        self.assertNotEqual(input_list_words("hello"),["hello", "world"], "Test FAILED: actual should not equal expected")
+        print("test_InputListWords_negative PASS")
+    def test_InputListWords_postive(self):
+        self.assertEqual(input_list_words("hello WoRld"),["hello", "world"], "Test FAILED: actual should equal  Expected")
+        print("test_InputListWords_negative PASS")
+    def test_InputListWords_postive_len(self):
+        self.assertEqual(len(input_list_words("hello WoRld")),2, "Test FAILED: actual should equal  Expected")
+        print("test_InputListWords_positve_len PASS")
+    def test_InputListWords_positive_notAWord(self):
+        self.assertEqual(input_list_words("sSG !234Sg ss"),["ssg", "!234sg","ss"], "Test FAILED: actual should equal  Expected")
+        print("test_InputListWords_positive_notAWord PASS")
 def main():
     create_word_dict()
     userInput()
@@ -77,6 +91,10 @@ def main():
     #mytest.test4()
     #mytest.test5()
 
+    mytest.test_InputListWords_negative()
+    mytest.test_InputListWords_postive()
+    mytest.test_InputListWords_postive_len()
+    mytest.test_InputListWords_positive_notAWord()
+
 
 main()
-    
