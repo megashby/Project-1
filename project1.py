@@ -81,6 +81,16 @@ def frequent_misspelled(badwords):
 
     return(alotmisspelled)
 
+def avg_length(badwords):
+    counter = 0
+    total = len(badwords)
+    for word in badwords:
+        a = len(word)
+        counter += a
+
+    avg = round(counter/total)
+    return avg
+
 
 
 
@@ -108,12 +118,16 @@ class MyTest(unittest.TestCase):
         self.assertEqual(frequent_misspelled(["dogg", "catt", "socer"]), {})
     def test9(self):
         self.assertEqual(frequent_misspelled([]),{})
+    def test10(self):
+        self.assertEqual(avg_length(["dogg", "catt", "socer"]), 4)
 
 def main():
-    create_word_dict()
+    #create_word_dict()
+
+
     #userInput()
 
-   
+
     mytest = MyTest()
     mytest.test()
     mytest.test1()
@@ -125,7 +139,7 @@ def main():
     mytest.test7()
     mytest.test8()
     mytest.test9()
+    mytest.test10()
 
 
 main()
-    
