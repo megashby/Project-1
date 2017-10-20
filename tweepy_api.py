@@ -1,5 +1,3 @@
-
-
 import sys
 #csv is the output we'll write to
 import csv
@@ -12,10 +10,10 @@ import tweepy
 #for simplicity, we'll leave them here but for security's sake
 #we should have it read the keys off of a seperate file, so we can turn the project in
 #without giving other people access to our keys.
-consumer_key = "your_consumer_key"
-consumer_secret = "your_consumer_secret"
-access_key = "your_access_key"
-access_secret = "your_access_secret"
+consumer_key = "O3C85Oz12gLzyVkUg7j8VtSY8"
+consumer_secret = "NItlHvTsHkrdvBoh6lTf3A1l7LzTth6cHs4LbAaKfXHg2rcLvH"
+access_key = "904636628-76dOU1Mx5hRrIZqhOR37IHZQxM3Eekx8PQGspQWm"
+access_secret = "CrGikwcFBu3pLq0tBFIBWhq61PQRBgIkp9LayoYXqtTrc"
 
 #here is an example of gathering 100 tweets using tweepy
 def get_tweets(username):
@@ -33,11 +31,13 @@ def get_tweets(username):
     tweets = api.user_timeline(screen_name = username,count = number_of_tweets)
 
     #create array of tweet information: username, tweet id, date/time, text
-    tweets_for_csv = [[username,tweet.id_str, tweet.created_at, tweet.text.encode("utf-8")] for tweet in tweets]
-
+    #tweets_for_csv = [[username,tweet.id_str, tweet.created_at, tweet.text.encode("utf-8")] for tweet in tweets]
+    tweets_for_csv = [[tweet.text.encode("utf-8")] for tweet in tweets]
+    
     #write to a new csv file from the array of tweets
-    print "writing to {0}_tweets.csv".format(username)
-    with open("{0}_tweets.csv".format(username) , 'w+') as file:
+    print ("writing to {0}_tweets2.csv".format(username))
+
+    with open("{0}_tweets2.csv".format(username) , 'w+') as file:
         writer = csv.writer(file, delimiter='|')
         writer.writerows(tweets_for_csv)
 
@@ -45,3 +45,6 @@ def get_tweets(username):
 #We'll have to integrate it into our project.
 #All this info was gathered from tutorials.
 #tweepy makes it super easy.
+def main():
+    get_tweets('VirtuousVictor')
+main()
