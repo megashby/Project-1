@@ -22,7 +22,7 @@ access_secret = str(keys[3])
 def userInput():
     user_input = ""
     while user_input == "":
-            user_input = raw_input("Write your sentence:  ")
+            user_input = str(input("Write in your sentence? "))
             user_input=user_input.strip()
     input_list_words(user_input)
     user_input = re.sub('[\W_]+', ' ', user_input)
@@ -113,7 +113,7 @@ def get_tweets():
     tweet_list = []
     username = ""
     while username == "":
-            username = raw_input("Enter a valid twitter handle (without @): ")
+            username = str(input("Enter a valid twitter handle (without @): "))
 
     # http://tweepy.readthedocs.org/en/v3.1.0/getting_started.html#api
     # this block of code authenticates us with twitter's db
@@ -140,7 +140,7 @@ def get_tweets():
     #scrubs tweets while displaying
     for tweet in tweets_list:
     	#removes URLs
-    	tweet = re.sub(r"http\S+","", str(tweet[0]))
+    	tweet = re.sub(r"http\S+","", str(tweet[0].decode("utf-8")))
     	print(tweet)
     	#removes nonalphanumeric
     	tweet = re.sub('[\W_]+', ' ', tweet)
@@ -179,7 +179,7 @@ def main():
     inputChoice = ""
 
     while valid == False:
-        inputChoice = raw_input("Check Twitter? (t/f): ")
+        inputChoice = str(input("Check Twitter user? (t/f): "))
         if inputChoice == 't':
             get_tweets()
             valid = True
