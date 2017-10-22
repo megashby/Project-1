@@ -135,9 +135,14 @@ def get_tweets():
     print ("finding tweets for {0}".format(username))
 
     cleaned_tweets = ""
-    #scrubs tweets of urls
+    print("Input: ")
+    #scrubs tweets while displaying
     for tweet in tweets_list:
+    	#removes URLs
     	tweet = re.sub(r"http\S+","", str(tweet[0]))
+    	print(tweet)
+    	#removes nonalphanumeric
+    	tweet = re.sub('[\W_]+', ' ', tweet)
     	cleaned_tweets += tweet
 
     input_list_words(cleaned_tweets)
