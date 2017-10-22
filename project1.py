@@ -22,7 +22,7 @@ access_secret = str(keys[3])
 def userInput():
     user_input = ""
     while user_input == "":
-            user_input = str(input("Write in your sentence? "))
+            user_input = raw_input("Write your sentence:  ")
             user_input=user_input.strip()
     input_list_words(user_input)
     user_input = re.sub('[\W_]+', ' ', user_input)
@@ -123,7 +123,7 @@ def get_tweets():
 
 
     #set count to however many tweets you want; twitter only allows 200 at once
-    number_of_tweets = 15
+    number_of_tweets = 1
 
     #takes username and number of tweets and gets tweets
     tweets = api.user_timeline(screen_name = username,count = number_of_tweets)
@@ -176,19 +176,16 @@ def main():
 
     create_word_dict()
     valid = False
-	inputChoice = ""
+    inputChoice = ""
 
-	while valid == False:
-
-		inputChoice = raw_input("Check Twitter? (t/f): ")
-
-		if inputChoice == 't':
-			get_tweets()
-			valid = True
-
-		elif inputChoice == 'f':
-			userInput()
-			valid = True
+    while valid == False:
+        inputChoice = raw_input("Check Twitter? (t/f): ")
+        if inputChoice == 't':
+            get_tweets()
+            valid = True
+        elif inputChoice == 'f':
+            userInput()
+            valid = True
 
     #userInput()
 
