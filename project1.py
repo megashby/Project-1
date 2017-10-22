@@ -25,6 +25,7 @@ def userInput():
             user_input = str(input("Write in your sentence? "))
             user_input=user_input.strip()
     input_list_words(user_input)
+    user_input = re.sub('[\W_]+', ' ', user_input)
     #print (user_input)
 
 word_dict = {}
@@ -172,7 +173,8 @@ class MyTest(unittest.TestCase):
         self.assertEqual(avg_length(["dogg", "catt", "socer"]), 4)
 
 def main():
-    #create_word_dict()
+
+    create_word_dict()
     valid = False
 	inputChoice = ""
 
