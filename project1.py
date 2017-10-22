@@ -1,3 +1,4 @@
+
 import unittest
 import sys
 #regex
@@ -77,6 +78,7 @@ def input_list_words(user_input):
    #print(input_words)
     #return (input_words)
     userResult(input_words)
+    return (input_words)
 
 def frequent_misspelled(badwords):
     badwords_dict = {}
@@ -139,12 +141,18 @@ def get_tweets():
     print("Input: ")
     #scrubs tweets while displaying
     for tweet in tweets_list:
-    	#removes URLs
-    	tweet = re.sub(r"http\S+","", str(tweet[0].decode("utf-8")))
-    	print(tweet)
-    	#removes nonalphanumeric
-    	tweet = re.sub('[\W_]+', ' ', tweet)
-    	cleaned_tweets += tweet
+        print(tweet)
+        #removes URLs
+        tweet = re.sub(r"http\S+","", str(tweet[0].decode("utf-8")))
+        #print(tweet)
+
+        #removes @usernames
+        tweet = ' '.join(word for word in str(tweet).split() if word[0]!= '@')
+        #print(tweet)
+
+        #removes nonalphanumeric
+        tweet = re.sub('[\W_]+', ' ', tweet)
+        cleaned_tweets += tweet
 
     input_list_words(cleaned_tweets)
 
@@ -189,6 +197,9 @@ def main():
 
     #userInput()
 
+    print()
+    print()
+    print("Testing Unit Tests")
 
     mytest = MyTest()
     mytest.test()
@@ -204,4 +215,4 @@ def main():
     mytest.test10()
 
 
-main()
+main()    
