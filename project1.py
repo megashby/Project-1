@@ -1,4 +1,23 @@
 import unittest
+import sys
+#regex
+import re
+#http://www.tweepy.org/
+import tweepy
+
+#Get your Twitter API credentials and enter them in a txt file
+#These are keys that twitter gives you when you register an App
+#if it doesn't find keys.txt, add the full file path
+keys = []
+inFile = open("keys.txt", "r")
+for line in inFile:
+    line = line.strip()
+    keys.append(line)
+
+consumer_key = str(keys[0])
+consumer_secret = str(keys[1])
+access_key = str(keys[2])
+access_secret = str(keys[3])
 
 def userInput():
     user_input = ""
@@ -22,9 +41,6 @@ def wordCheck(word):
         return True
     else:
         return False
-
-
-
 
 def userResult(wordList):
     #print(wordList)
@@ -91,11 +107,40 @@ def avg_length(badwords):
     avg = round(counter/total)
     return avg
 
+def get_tweets():
+
+    tweet_list = []
+    username = ""
+    while username == "":
+            username = raw_input("Enter a valid twitter handle (without @): ")
+
+    # http://tweepy.readthedocs.org/en/v3.1.0/getting_started.html#api
+    # this block of code authenticates us with twitter's db
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_key, access_secret)
+    api = tweepy.API(auth)
 
 
+    #set count to however many tweets you want; twitter only allows 200 at once
+    number_of_tweets = 15
 
+    #takes username and number of tweets and gets tweets
+    tweets = api.user_timeline(screen_name = username,count = number_of_tweets)
 
+    #create array of tweet information: username, tweet id, date/time, text
+    #tweets_for_csv = [[username,tweet.id_str, tweet.created_at, tweet.text.encode("utf-8")] for tweet in tweets]
+    tweets_list = [[tweet.text.encode("utf-8")] for tweet in tweets]
+    
+    #declares that it is looking for tweets for var "username"
+    print ("finding tweets for {0}".format(username))
 
+    cleaned_tweets = ""
+    #scrubs tweets of urls
+    for tweet in tweets_list:
+    	tweet = re.sub(r"http\S+","", str(tweet[0]))
+    	cleaned_tweets += tweet
+
+    input_list_words(cleaned_tweets)
 
 class MyTest(unittest.TestCase):
     def test(self):
@@ -123,7 +168,20 @@ class MyTest(unittest.TestCase):
 
 def main():
     #create_word_dict()
+    valid = False
+	inputChoice = ""
 
+	while valid == False:
+
+		inputChoice = raw_input("Check Twitter? (t/f): ")
+
+		if inputChoice == 't':
+			get_tweets()
+			valid = True
+
+		elif inputChoice == 'f':
+			userInput()
+			valid = True
 
     #userInput()
 
