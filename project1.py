@@ -1,4 +1,5 @@
 
+
 import unittest
 import sys
 #regex
@@ -142,30 +143,31 @@ def get_tweets():
     #scrubs tweets while displaying
     for tweet in tweets_list:
         #removes URLs and b's
-    	tweet = re.sub(r"http\S+","", str(tweet[0].decode("utf-8")))
-    	print(tweet)
-    	#removes nonalphanumeric
-    	tweet = re.sub('[\W_]+', ' ', tweet)
-    	#removes RT
-    	tweet = re.sub('RT','', tweet)
+        tweet = re.sub(r"http\S+","", str(tweet[0].decode("utf-8")))
 
-    	#removes @usernames
-    	tweet = ' '.join(word for word in str(tweet).split() if word[0] != '@')
+        #removes @usernames
+        tweet = ' '.join(word for word in str(tweet).split() if word[0] != '@')
+        print(tweet)
+        #removes nonalphanumeric
+        tweet = re.sub('[\W_]+', ' ', tweet)
+        #removes RT
+        tweet = re.sub('RT ','', tweet)
 
-    	#removes some emojis
-    	emoji_pattern = re.compile(
-    	u"(\ud83d[\ude00-\ude4f])|"  # emoticons
-    	u"(\ud83c[\udf00-\uffff])|"  # symbols & pictographs (1 of 2)
-    	u"(\ud83d[\u0000-\uddff])|"  # symbols & pictographs (2 of 2)
-    	u"(\ud83d[\ude80-\udeff])|"  # transport & map symbols
-    	u"(\ud83c[\udde0-\uddff])"  # flags (iOS)
-    	"+", flags=re.UNICODE)
-    	tweet = emoji_pattern.sub(r'', tweet)
 
-    	#removes digits from tweets
-    	tweet = re.sub("\d+", "", tweet)
+        #removes some emojis
+        emoji_pattern = re.compile(
+        u"(\ud83d[\ude00-\ude4f])|"  # emoticons
+        u"(\ud83c[\udf00-\uffff])|"  # symbols & pictographs (1 of 2)
+        u"(\ud83d[\u0000-\uddff])|"  # symbols & pictographs (2 of 2)
+        u"(\ud83d[\ude80-\udeff])|"  # transport & map symbols
+        u"(\ud83c[\udde0-\uddff])"  # flags (iOS)
+        "+", flags=re.UNICODE)
+        tweet = emoji_pattern.sub(r'', tweet)
 
-    	cleaned_tweets += tweet
+        #removes digits from tweets
+        tweet = re.sub("\d+", "", tweet)
+
+        cleaned_tweets += tweet
   
 
     input_list_words(cleaned_tweets)
@@ -193,7 +195,8 @@ class MyTest(unittest.TestCase):
         self.assertEqual(frequent_misspelled([]),{})
     def test10(self):
         self.assertEqual(avg_length(["dogg", "catt", "socer"]), 4)
-
+    def test11(self):
+        self.assertEqual(avg_length(["t"]), 1)
 def main():
 
     create_word_dict()
@@ -213,20 +216,21 @@ def main():
 
     print()
     print()
-    print("Testing Unit Tests")
+    # print("Testing Unit Tests")
 
-    mytest = MyTest()
-    mytest.test()
-    mytest.test1()
-    mytest.test2()
-    mytest.test3()
-    mytest.test4()
-    mytest.test5()
-    mytest.test6()
-    mytest.test7()
-    mytest.test8()
-    mytest.test9()
-    mytest.test10()
+    # mytest = MyTest()
+    # mytest.test()
+    # mytest.test1()
+    # mytest.test2()
+    # mytest.test3()
+    # mytest.test4()
+    # mytest.test5()
+    # mytest.test6()
+    # mytest.test7()
+    # mytest.test8()
+    # mytest.test9()
+    # mytest.test10()
+    # mytest.test11()
 
 
 main()    
