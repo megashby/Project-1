@@ -59,12 +59,17 @@ def userResult(wordList):
             if wordCheck(item):
                 truecount +=1
             else:
-                badwords.append(item)
+                if item != '':
+                    badwords.append(item)
     result = ''
-    #print (badwords)
+        #print (badwords)
     #badwords = str(badwords)
-    badpercentage = ((len(wordList)-truecount)/(len(wordList)))
-    badpercentage = str(round(badpercentage, 2))
+
+    if len(wordList) == 0:
+        badpercentage = str(0.0)
+    else:
+        badpercentage = ((len(wordList)-truecount)/(len(wordList)))
+        badpercentage = str(round(badpercentage, 2))
     result='your incorrectly spelled words are: '+str(badwords)+" your percentage of incorrectly spelled words is "+badpercentage
 
     #print(badwords)
@@ -78,6 +83,7 @@ def input_list_words(user_input):
     input_words = user_input.lower().split(" ")
    #print(input_words)
     #return (input_words)
+    input_words =[x for x in input_words if x != '']
     userResult(input_words)
     return (input_words)
 
@@ -142,11 +148,16 @@ def get_tweets():
     print("Input: ")
     #scrubs tweets while displaying
     for tweet in tweets_list:
+        print(tweet)
         #removes URLs and b's
         tweet = re.sub(r"http\S+","", str(tweet[0].decode("utf-8")))
 
         #removes @usernames
         tweet = ' '.join(word for word in str(tweet).split() if word[0] != '@')
+        print(tweet)
+
+        #removes things that follow hashtags
+        tweet = ' '.join(word for word in str(tweet).split() if word[0] != '#')
         print(tweet)
         #removes nonalphanumeric
         tweet = re.sub('[\W_]+', ' ', tweet)
