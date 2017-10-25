@@ -171,6 +171,17 @@ def get_tweets():
   
 
     input_list_words(cleaned_tweets)
+def suggestWords1(word):
+    suggestedwords = []
+    word = str(word)
+    for i in range(len(word)):
+        if word[0:i]+word[i+1:] in word_dict.keys():
+            #print("yay " + str(word[0:i]+word[i+1:]))
+            suggestedwords.append(word[0:i]+word[i+1:])
+        #else:
+            #print("nay " + str(word[0:i]+word[i+1:]))
+    return (suggestedwords)
+
 
 class MyTest(unittest.TestCase):
     def test(self):
@@ -197,6 +208,14 @@ class MyTest(unittest.TestCase):
         self.assertEqual(avg_length(["dogg", "catt", "socer"]), 4)
     def test11(self):
         self.assertEqual(avg_length(["t"]), 1)
+    def test12(self):
+        self.assertEqual(suggestWords1("this"), ['his', 'tis'])
+    def test13(self):
+        self.assertEqual(suggestWords1('thappy'), ['happy'])
+    def test14(self):
+        self.assertEqual(suggestWords1('ia'), ['a', 'i'])
+    def test15(self):
+        self.assertEqual(suggestWords1('sunflower'), [])
 def main():
 
     create_word_dict()
@@ -218,7 +237,7 @@ def main():
     print()
     # print("Testing Unit Tests")
 
-    # mytest = MyTest()
+    mytest = MyTest()
     # mytest.test()
     # mytest.test1()
     # mytest.test2()
@@ -231,6 +250,11 @@ def main():
     # mytest.test9()
     # mytest.test10()
     # mytest.test11()
+    mytest.test12()
+    mytest.test13()
+    mytest.test14()
+    mytest.test15()
+    
 
 
 main()    
