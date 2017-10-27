@@ -4,6 +4,7 @@ import sys
 import re
 #http://www.tweepy.org/
 import tweepy
+#list of contractions can be found here: https://www.textfixer.com/tutorials/english-contractions-list.txt
 
 #Get your Twitter API credentials and enter them in a txt file
 #These are keys that twitter gives you when you register an App
@@ -24,10 +25,11 @@ def userInput():
     while user_input == "":
             user_input = str(input("Write in your sentence? "))
             user_input=user_input.strip()
-    input_list_words(user_input)
-    user_input = re.sub(r"[^a-zA-Z0-9']", ' ', user_input)
+
+    user_input = re.sub(r"[^a-zA-Z']", ' ', user_input)
     user_input = user_input.strip()
     user_input = re.sub(' +',' ',user_input)
+    input_list_words(user_input)
     #print (user_input)
 
 word_dict = {}
@@ -103,7 +105,7 @@ def userResult(wordList):
     #badwords = str(badwords)
     badpercentage = ((len(wordList)-truecount)/(len(wordList)))
     badpercentage = str(round(badpercentage, 2))
-    result='your incorrectly spelled words are: '+str(badwords)+" your percentage of incorrectly spelled words is "+badpercentage+'your slang words are'+str(slangwords)
+    result='your incorrectly spelled words are: '+str(badwords)+" your percentage of incorrectly spelled words is "+badpercentage+', your slang words are: '+str(slangwords)
 
     #print(badwords)
     frequent_misspelled(badwords)
@@ -112,6 +114,14 @@ def userResult(wordList):
 
 def input_list_words(user_input):
     input_words = user_input.lower().split(" ")
+    for i in range(len(input_words)):
+        cur = input_words[i]
+        if cur[0] == "'":
+            #print(cur[1:])
+            input_words[i] = cur[1:]
+        elif cur[-1] == "'":
+            #print(cur[:-1])
+            input_words[i] = cur[:-1]
    #print(input_words)
     #return (input_words)
     userResult(input_words)
