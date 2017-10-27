@@ -25,7 +25,9 @@ def userInput():
             user_input = str(input("Write in your sentence? "))
             user_input=user_input.strip()
     input_list_words(user_input)
-    user_input = re.sub('[\W_]+', ' ', user_input)
+    user_input = re.sub(r"[^a-zA-Z0-9']", ' ', user_input)
+    user_input = user_input.strip()
+    user_input = re.sub(' +',' ',user_input)
     #print (user_input)
 
 word_dict = {}
@@ -45,6 +47,15 @@ def create_slang_word_dict():
         slang_word_dict[line] = 1
     words.close()
 
+contractions_list = []
+def create_contractions_list():
+    contracts = open("contractions.txt", "r")
+    for line in contracts:
+        line = line.strip()
+        line = line.lower()
+        contractions_list.append(line)
+    contracts.close()
+
 def wordCheck(word):
     word = word.lower()
     if word in word_dict:
@@ -57,6 +68,12 @@ def wordCheck(word):
 def slangWordCheck(word):
     word = word.lower()
     if word in slang_word_dict:
+        return True
+    else:
+        return False
+def checkContractions(word):
+    word = word.lower()
+    if word in contractions_list:
         return True
     else:
         return False
@@ -73,7 +90,7 @@ def userResult(wordList):
             badwords.append(wordList[0])
     else:
         for item in wordList:
-            if wordCheck(item):
+            if wordCheck(item) or checkContractions(item):
                 truecount +=1
             else:
                 badwords.append(item)
@@ -251,9 +268,9 @@ class MyTest(unittest.TestCase):
     def test16(self):
         self.assertEqual(typoFix(["ditot"]), ["ditto"])
     def test17(self):
-        self.assertEqual(wordCheck("thot"), True)
+        self.assertEqual(slangWordCheck("thot"), True)
     def test18(self):
-        self.assertEqual(wordCheck("stankyleg"), False)
+        self.assertEqual(slangWordCheck("stankyleg"), False)
 def main():
 
     create_word_dict()
@@ -261,6 +278,7 @@ def main():
     inputChoice = ""
 
     create_slang_word_dict()
+    create_contractions_list()
 
     while valid == False:
         inputChoice = str(input("Check Twitter user? (t/f): "))
