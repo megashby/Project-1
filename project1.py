@@ -1,5 +1,3 @@
-
-
 import unittest
 import sys
 #regex
@@ -38,9 +36,27 @@ def create_word_dict():
         word_dict[line] = 1
     words.close()
 
+slang_word_dict = {}
+def create_slang_word_dict():
+    words = open("slangdictionary.txt", "r")
+    for line in words:
+        line = line.strip()
+        line = line.lower()
+        slang_word_dict[line] = 1
+    words.close()
+
 def wordCheck(word):
     word = word.lower()
     if word in word_dict:
+        return True
+    #elif word in slang_word_dict:
+    #    return True
+    else:
+        return False
+
+def slangWordCheck(word):
+    word = word.lower()
+    if word in slang_word_dict:
         return True
     else:
         return False
@@ -49,6 +65,7 @@ def userResult(wordList):
     #print(wordList)
     truecount = 0
     badwords = []
+    slangwords = []
     if len(wordList)==1:
         if wordCheck(wordList[0]):
             truecount +=1
@@ -60,19 +77,21 @@ def userResult(wordList):
                 truecount +=1
             else:
                 badwords.append(item)
+    for item in badwords:
+        if slangWordCheck(item):
+            slangwords.append(item)
+            badwords.remove(item)
     result = ''
     #print (badwords)
     #badwords = str(badwords)
     badpercentage = ((len(wordList)-truecount)/(len(wordList)))
     badpercentage = str(round(badpercentage, 2))
-    result='your incorrectly spelled words are: '+str(badwords)+" your percentage of incorrectly spelled words is "+badpercentage
+    result='your incorrectly spelled words are: '+str(badwords)+" your percentage of incorrectly spelled words is "+badpercentage+'your slang words are'+str(slangwords)
 
     #print(badwords)
     frequent_misspelled(badwords)
 
-    print(result)
-    return (result)
-
+    return print(result)
 
 def input_list_words(user_input):
     input_words = user_input.lower().split(" ")
@@ -196,12 +215,6 @@ def typoFix(badwords):
             a[i+1], a[i] = a[i], a[i+1]
     return (correct)
 
-
-
-
-
-
-
 class MyTest(unittest.TestCase):
     def test(self):
         self.assertEqual(wordCheck("Happy"), True)
@@ -237,11 +250,17 @@ class MyTest(unittest.TestCase):
         self.assertEqual(suggestWords1('sunflower'), [])
     def test16(self):
         self.assertEqual(typoFix(["ditot"]), ["ditto"])
+    def test17(self):
+        self.assertEqual(wordCheck("thot"), True)
+    def test18(self):
+        self.assertEqual(wordCheck("stankyleg"), False)
 def main():
 
     create_word_dict()
     valid = False
     inputChoice = ""
+
+    create_slang_word_dict()
 
     while valid == False:
         inputChoice = str(input("Check Twitter user? (t/f): "))
@@ -271,12 +290,13 @@ def main():
     # mytest.test9()
     # mytest.test10()
     # mytest.test11()
-    mytest.test12()
-    mytest.test13()
-    mytest.test14()
-    mytest.test15()
-    mytest.test16()
-
+    # mytest.test12()
+    # mytest.test13()
+    # mytest.test14()
+    # mytest.test15()
+    # mytest.test16()
+    # mytest.test17()
+    mytest.test18()
 
 
 main()
