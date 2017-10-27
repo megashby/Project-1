@@ -59,17 +59,12 @@ def userResult(wordList):
             if wordCheck(item):
                 truecount +=1
             else:
-                if item != '':
-                    badwords.append(item)
+                badwords.append(item)
     result = ''
-        #print (badwords)
+    #print (badwords)
     #badwords = str(badwords)
-
-    if len(wordList) == 0:
-        badpercentage = str(0.0)
-    else:
-        badpercentage = ((len(wordList)-truecount)/(len(wordList)))
-        badpercentage = str(round(badpercentage, 2))
+    badpercentage = ((len(wordList)-truecount)/(len(wordList)))
+    badpercentage = str(round(badpercentage, 2))
     result='your incorrectly spelled words are: '+str(badwords)+" your percentage of incorrectly spelled words is "+badpercentage
 
     #print(badwords)
@@ -83,7 +78,6 @@ def input_list_words(user_input):
     input_words = user_input.lower().split(" ")
    #print(input_words)
     #return (input_words)
-    input_words =[x for x in input_words if x != '']
     userResult(input_words)
     return (input_words)
 
@@ -140,7 +134,7 @@ def get_tweets():
     #create array of tweet information: username, tweet id, date/time, text
     #tweets_for_csv = [[username,tweet.id_str, tweet.created_at, tweet.text.encode("utf-8")] for tweet in tweets]
     tweets_list = [[tweet.text.encode("utf-8")] for tweet in tweets]
-    
+
     #declares that it is looking for tweets for var "username"
     print ("finding tweets for {0}".format(username))
 
@@ -148,16 +142,11 @@ def get_tweets():
     print("Input: ")
     #scrubs tweets while displaying
     for tweet in tweets_list:
-        print(tweet)
         #removes URLs and b's
         tweet = re.sub(r"http\S+","", str(tweet[0].decode("utf-8")))
 
         #removes @usernames
         tweet = ' '.join(word for word in str(tweet).split() if word[0] != '@')
-        print(tweet)
-
-        #removes things that follow hashtags
-        tweet = ' '.join(word for word in str(tweet).split() if word[0] != '#')
         print(tweet)
         #removes nonalphanumeric
         tweet = re.sub('[\W_]+', ' ', tweet)
@@ -179,7 +168,7 @@ def get_tweets():
         tweet = re.sub("\d+", "", tweet)
 
         cleaned_tweets += tweet
-  
+
 
     input_list_words(cleaned_tweets)
 def suggestWords1(word):
@@ -192,6 +181,25 @@ def suggestWords1(word):
         #else:
             #print("nay " + str(word[0:i]+word[i+1:]))
     return (suggestedwords)
+
+
+def typoFix(badwords):
+    correct = []              #list of corrected words
+    for word in badwords:     # goes through each word in badWords
+      a = list(word)          # splits word into letters
+      for i in range(len(a)-1):   # goes through each letter in a
+        a[i], a[i+1] = a[i+1], a[i]   #swaps letters
+        if "".join(a) in word_dict:
+         correct.append("".join(a))
+         a[i+1], a[i] = a[i], a[i+1]
+        else:
+            a[i+1], a[i] = a[i], a[i+1]
+    return (correct)
+
+
+
+
+
 
 
 class MyTest(unittest.TestCase):
@@ -227,6 +235,8 @@ class MyTest(unittest.TestCase):
         self.assertEqual(suggestWords1('ia'), ['a', 'i'])
     def test15(self):
         self.assertEqual(suggestWords1('sunflower'), [])
+    def test16(self):
+        self.assertEqual(typoFix(["ditot"]), ["ditto"])
 def main():
 
     create_word_dict()
@@ -265,7 +275,8 @@ def main():
     mytest.test13()
     mytest.test14()
     mytest.test15()
-    
+    mytest.test16()
 
 
-main()    
+
+main()
