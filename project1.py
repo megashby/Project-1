@@ -85,6 +85,7 @@ def userResult(wordList):
     truecount = 0
     badwords = []
     slangwords = []
+    corrections = []
     if len(wordList)==1:
         if wordCheck(wordList[0]):
             truecount +=1
@@ -100,12 +101,18 @@ def userResult(wordList):
         if slangWordCheck(item):
             slangwords.append(item)
             badwords.remove(item)
+
+    for item in badwords:
+        corrections.extend(suggestWords1(item))
+    corrections.extend(typoFix(badwords))
+    corrections = list(set(corrections))
     result = ''
+
     #print (badwords)
     #badwords = str(badwords)
     badpercentage = ((len(wordList)-truecount)/(len(wordList)))
     badpercentage = str(round(badpercentage, 2))
-    result='your incorrectly spelled words are: '+str(badwords)+" your percentage of incorrectly spelled words is "+badpercentage+', your slang words are: '+str(slangwords)
+    result='your incorrectly spelled words are: '+str(badwords)+" your percentage of incorrectly spelled words is "+badpercentage+', your slang words are: '+str(slangwords)+ ". Did you mean: "+str(corrections)+'?'
 
     #print(badwords)
     frequent_misspelled(badwords)
@@ -226,7 +233,7 @@ def suggestWords1(word):
             suggestedwords.append(word[0:i]+word[i+1:])
         #else:
             #print("nay " + str(word[0:i]+word[i+1:]))
-    return (suggestedwords)
+    return list(set(suggestedwords))
 
 
 def typoFix(badwords):
@@ -240,7 +247,7 @@ def typoFix(badwords):
          a[i+1], a[i] = a[i], a[i+1]
         else:
             a[i+1], a[i] = a[i], a[i+1]
-    return (correct)
+    return list(set(correct))
 
 class MyTest(unittest.TestCase):
     def test(self):
@@ -281,6 +288,13 @@ class MyTest(unittest.TestCase):
         self.assertEqual(slangWordCheck("thot"), True)
     def test18(self):
         self.assertEqual(slangWordCheck("stankyleg"), False)
+    def test19(self):
+        self.assertEqual(checkContractions("can't"), True)
+    def test20(self):
+        self.assertEqual(checkContractions('Maria'), False)
+    def test21(self):
+        self.assertEqual(typoFix(["hfhfhfhfh"]), [])
+
 def main():
 
     create_word_dict()
@@ -325,6 +339,9 @@ def main():
     # mytest.test16()
     # mytest.test17()
     mytest.test18()
+    mytest.test19()
+    mytest.test20()
+    mytest.test21()
 
 
 main()
