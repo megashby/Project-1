@@ -223,6 +223,10 @@ def get_tweets():
 
         #removes @usernames
         tweet = ' '.join(word for word in str(tweet).split() if word[0] != '@')
+
+        #removes hashtags
+        tweet = ' '.join(word for word in str(tweet).split() if word[0] != '#')
+
         print(tweet)
         #removes nonalphanumeric
         tweet = re.sub('[\W_]+', ' ', tweet)
