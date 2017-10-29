@@ -4,10 +4,6 @@ import sys
 import re
 #http://www.tweepy.org/
 import tweepy
-
-import plotly.plotly as py
-import plotly.graph_objs as go
-
 #list of contractions can be found here: https://www.textfixer.com/tutorials/english-contractions-list.txt
 
 #Get your Twitter API credentials and enter them in a txt file
@@ -84,34 +80,50 @@ def checkContractions(word):
     else:
         return False
 
+
+spelledrightdict = {}
+spelledwrongdict = {}
 def userResult(wordList):
     #print(wordList)
     truecount = 0
     badwords = []
     slangwords = []
     corrections = []
-    #checks to see if only word is in dict
     if len(wordList)==1:
         if wordCheck(wordList[0]):
             truecount +=1
+            if len(wordList[0]) in spelledrightdict.keys():
+                spelledrightdict[len(wordList[0])].append(wordList[0])
+            else:
+                spelledrightdict[len(wordList[0])] = []
+                spelledrightdict[len(wordList[0])].append(wordList[0])
+
         else:
             badwords.append(wordList[0])
-    #iterates through list and checks whether in dict or contraction
     else:
         for item in wordList:
             if wordCheck(item) or checkContractions(item):
                 truecount +=1
+                if len(item) in spelledrightdict.keys():
+                     spelledrightdict[len(item)].append(item)
+                else:
+                     spelledrightdict[len(item)] = []
+                     spelledrightdict[len(item)].append(item)
             else:
                 badwords.append(item)
-
-    #takes words not in dict and checks if in slang dict
     for item in badwords:
         if slangWordCheck(item):
             slangwords.append(item)
             badwords.remove(item)
+            badwords = list(filter(lambda a: a!= item, badwords))
 
-    #for every item in bad words, run in suggestWords
     for item in badwords:
+        if len(item) in spelledwrongdict.keys():
+            spelledwrongdict[len(item)].append(item)
+        else:
+            spelledwrongdict[len(item)] = []
+            spelledwrongdict[len(item)].append(item)
+
         corrections.extend(suggestWords1(item))
     corrections.extend(typoFix(badwords))
     corrections = list(set(corrections))
@@ -120,28 +132,26 @@ def userResult(wordList):
     #print (badwords)
     #badwords = str(badwords)
     badpercentage = ((len(wordList)-truecount)/(len(wordList)))
-    badpercentage = str(round(badpercentage, 2) * 100)
-    result='your incorrectly spelled words are: '+str(badwords)+"\n your percentage of incorrectly spelled words is "+badpercentage+"%"+',\n your slang words are: '+str(slangwords)+ ".\n Did you mean: "+str(corrections)+'?'
+    badpercentage = str(round(badpercentage, 2))
+    result='your incorrectly spelled words are: '+str(badwords)+" your percentage of incorrectly spelled words is "+badpercentage+', your slang words are: '+str(slangwords)+ ". Did you mean: "+str(corrections)+'?'
 
     #print(badwords)
     frequent_misspelled(badwords)
-    #graphOut(wordList, badwords)
+    graphparameters()
     return print(result)
 
 def input_list_words(user_input):
-	#turns words into lowercase and removes spaces
     input_words = user_input.lower().split(" ")
-    #iterate through list
+    input_words = list(filter(lambda a: a!= '', input_words))
     for i in range(len(input_words)):
         cur = input_words[i]
-        # if len(cur) == 0:
-        # 	pass
-        if cur[0] == "'":
-            #print(cur[1:])
-            input_words[i] = cur[1:]
-        elif cur[-1] == "'":
-            #print(cur[:-1])
-            input_words[i] = cur[:-1]
+        if len(cur) != 0:
+            if cur[0] == "'":
+                #print(cur[1:])
+                input_words[i] = cur[1:]
+            elif cur[-1] == "'":
+                #print(cur[:-1])
+                input_words[i] = cur[:-1]
    #print(input_words)
     #return (input_words)
     userResult(input_words)
@@ -192,7 +202,7 @@ def get_tweets():
 
 
     #set count to however many tweets you want; twitter only allows 200 at once
-    number_of_tweets = int(input("Enter a number of tweets up to 200: "))
+    number_of_tweets = 20
 
     #takes username and number of tweets and gets tweets
     tweets = api.user_timeline(screen_name = username,count = number_of_tweets)
@@ -222,7 +232,7 @@ def get_tweets():
 
         #removes some emojis
         emoji_pattern = re.compile(
-        u"																							(\ud83d[\ude00-\ude4f])|"  # emoticons
+        u"(\ud83d[\ude00-\ude4f])|"  # emoticons
         u"(\ud83c[\udf00-\uffff])|"  # symbols & pictographs (1 of 2)
         u"(\ud83d[\u0000-\uddff])|"  # symbols & pictographs (2 of 2)
         u"(\ud83d[\ude80-\udeff])|"  # transport & map symbols
@@ -235,9 +245,8 @@ def get_tweets():
 
         cleaned_tweets += tweet
 
-     #takes sterile input and shoves them into input_list_words
-    input_list_words(cleaned_tweets)
 
+    input_list_words(cleaned_tweets)
 def suggestWords1(word):
     suggestedwords = []
     word = str(word)
@@ -262,6 +271,68 @@ def typoFix(badwords):
         else:
             a[i+1], a[i] = a[i], a[i+1]
     return list(set(correct))
+
+import numpy as np 
+import matplotlib.pyplot as plt
+
+def graphparameters():
+    maxlength = 0
+    if len(spelledrightdict.keys()) != 0:
+        max1 = max(spelledrightdict.keys())
+    else:
+        max1 = 0
+    if len(spelledwrongdict.keys()) != 0:
+        max2 = max(spelledwrongdict.keys())
+    else:
+        max2 = 0
+    N = max(max1, max2)
+
+    spelledrightcount = [0]
+    spelledwrongcount = [0]
+    for i in range(1,N+1):
+        spelledrightcount.append(0)
+        spelledwrongcount.append(0)
+        if i in spelledrightdict.keys():
+            spelledrightcount[i] = len(spelledrightdict[i])
+        else:
+            spelledrightcount[i] = 0
+        if i in spelledwrongdict.keys():
+            spelledwrongcount[i] = len(spelledwrongdict[i])
+        else:
+            spelledwrongcount[i] = 0
+
+    spelledrightcount.pop(0)
+    spelledwrongcount.pop(0)
+    #(spelledrightcount)
+    #print(spelledwrongcount)
+
+    for i in range(N):
+        cur = spelledrightcount[i] + spelledwrongcount[i] 
+        if cur > maxlength:
+            maxlength = cur
+    graph(N, spelledrightcount, spelledwrongcount, maxlength)
+
+def graph(N, spelledrightcount, spelledwrongcount,  maxlength):
+
+    ind = np.arange(N)
+    width = 0.35
+
+    p1 = plt.bar(ind, spelledrightcount, width, color = "#d62728")
+    #p3 = plt.bar(ind, spelledslangcount, width, color = "#a34343")
+    p2 = plt.bar(ind, spelledwrongcount, width, color = "blue", bottom = spelledrightcount)
+
+    xlabellist = []
+    for i in range(1, N+1):
+        xlabellist.append(i)
+
+
+    plt.ylabel = ('frequency')
+    plt.title = ('words spelled right or wrong by length')
+    plt.xticks(ind, xlabellist)
+    plt.yticks(np.arange(0, maxlength+1, 2))
+    plt.legend((p1[0], p2[0]), ('Spelled Right', "Spelled Wrong"))
+    plt.show()
+
 
 class MyTest(unittest.TestCase):
     def test(self):
