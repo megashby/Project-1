@@ -4,6 +4,10 @@ import sys
 import re
 #http://www.tweepy.org/
 import tweepy
+
+import plotly.plotly as py
+import plotly.graph_objs as go
+
 #list of contractions can be found here: https://www.textfixer.com/tutorials/english-contractions-list.txt
 
 #Get your Twitter API credentials and enter them in a txt file
@@ -86,22 +90,27 @@ def userResult(wordList):
     badwords = []
     slangwords = []
     corrections = []
+    #checks to see if only word is in dict
     if len(wordList)==1:
         if wordCheck(wordList[0]):
             truecount +=1
         else:
             badwords.append(wordList[0])
+    #iterates through list and checks whether in dict or contraction
     else:
         for item in wordList:
             if wordCheck(item) or checkContractions(item):
                 truecount +=1
             else:
                 badwords.append(item)
+
+    #takes words not in dict and checks if in slang dict
     for item in badwords:
         if slangWordCheck(item):
             slangwords.append(item)
             badwords.remove(item)
 
+    #for every item in bad words, run in suggestWords
     for item in badwords:
         corrections.extend(suggestWords1(item))
     corrections.extend(typoFix(badwords))
@@ -111,18 +120,22 @@ def userResult(wordList):
     #print (badwords)
     #badwords = str(badwords)
     badpercentage = ((len(wordList)-truecount)/(len(wordList)))
-    badpercentage = str(round(badpercentage, 2))
-    result='your incorrectly spelled words are: '+str(badwords)+" your percentage of incorrectly spelled words is "+badpercentage+', your slang words are: '+str(slangwords)+ ". Did you mean: "+str(corrections)+'?'
+    badpercentage = str(round(badpercentage, 2) * 100)
+    result='your incorrectly spelled words are: '+str(badwords)+"\n your percentage of incorrectly spelled words is "+badpercentage+"%"+',\n your slang words are: '+str(slangwords)+ ".\n Did you mean: "+str(corrections)+'?'
 
     #print(badwords)
     frequent_misspelled(badwords)
-
+    #graphOut(wordList, badwords)
     return print(result)
 
 def input_list_words(user_input):
+	#turns words into lowercase and removes spaces
     input_words = user_input.lower().split(" ")
+    #iterate through list
     for i in range(len(input_words)):
         cur = input_words[i]
+        # if len(cur) == 0:
+        # 	pass
         if cur[0] == "'":
             #print(cur[1:])
             input_words[i] = cur[1:]
@@ -179,7 +192,7 @@ def get_tweets():
 
 
     #set count to however many tweets you want; twitter only allows 200 at once
-    number_of_tweets = 1
+    number_of_tweets = int(input("Enter a number of tweets up to 200: "))
 
     #takes username and number of tweets and gets tweets
     tweets = api.user_timeline(screen_name = username,count = number_of_tweets)
@@ -209,7 +222,7 @@ def get_tweets():
 
         #removes some emojis
         emoji_pattern = re.compile(
-        u"(\ud83d[\ude00-\ude4f])|"  # emoticons
+        u"																							(\ud83d[\ude00-\ude4f])|"  # emoticons
         u"(\ud83c[\udf00-\uffff])|"  # symbols & pictographs (1 of 2)
         u"(\ud83d[\u0000-\uddff])|"  # symbols & pictographs (2 of 2)
         u"(\ud83d[\ude80-\udeff])|"  # transport & map symbols
@@ -222,8 +235,9 @@ def get_tweets():
 
         cleaned_tweets += tweet
 
-
+     #takes sterile input and shoves them into input_list_words
     input_list_words(cleaned_tweets)
+
 def suggestWords1(word):
     suggestedwords = []
     word = str(word)
