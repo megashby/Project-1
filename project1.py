@@ -132,8 +132,8 @@ def userResult(wordList):
     #print (badwords)
     #badwords = str(badwords)
     badpercentage = ((len(wordList)-truecount)/(len(wordList)))
-    badpercentage = str(round(badpercentage, 2))
-    result='your incorrectly spelled words are: '+str(badwords)+" your percentage of incorrectly spelled words is "+badpercentage+', your slang words are: '+str(slangwords)+ ". Did you mean: "+str(corrections)+'?'
+    badpercentage = str(round(badpercentage, 2)*100)
+    result='your incorrectly spelled words are: '+str(badwords)+"\n your percentage of incorrectly spelled words is "+badpercentage+"%"+',\n your slang words are: '+str(slangwords)+ ".\n Did you mean: "+str(corrections)+'?'
 
     #print(badwords)
     frequent_misspelled(badwords)
@@ -171,7 +171,7 @@ def frequent_misspelled(badwords):
             alotmisspelled[item] = badwords_dict[item]
 
     if len(alotmisspelled) !=0:
-        print ("word misspelled :"+ " number of times misspelled" )
+        print ("word misspelled :"+ " number of times misspelled\n" )
         for item in alotmisspelled.keys():
             print(item, ":", alotmisspelled[item])
 
@@ -202,7 +202,7 @@ def get_tweets():
 
 
     #set count to however many tweets you want; twitter only allows 200 at once
-    number_of_tweets = 20
+    number_of_tweets = int(input("Enter a number of tweets up to 200: "))
 
     #takes username and number of tweets and gets tweets
     tweets = api.user_timeline(screen_name = username,count = number_of_tweets)
@@ -233,7 +233,6 @@ def get_tweets():
         #removes RT
         tweet = re.sub('RT ','', tweet)
 
-
         #removes some emojis
         emoji_pattern = re.compile(
         u"(\ud83d[\ude00-\ude4f])|"  # emoticons
@@ -247,10 +246,16 @@ def get_tweets():
         #removes digits from tweets
         tweet = re.sub("\d+", "", tweet)
 
+        " ".join(tweet.split())
+        re.sub("\s\s+" , " ", tweet)
+
+        tweet+=" "
+
         cleaned_tweets += tweet
 
 
     input_list_words(cleaned_tweets)
+    
 def suggestWords1(word):
     suggestedwords = []
     word = str(word)
@@ -427,10 +432,10 @@ def main():
     # mytest.test15()
     # mytest.test16()
     # mytest.test17()
-    mytest.test18()
-    mytest.test19()
-    mytest.test20()
-    mytest.test21()
+    #mytest.test18()
+    #mytest.test19()
+    #mytest.test20()
+    #mytest.test21()
 
 
 main()
